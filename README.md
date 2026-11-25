@@ -27,7 +27,7 @@ It detects human body keypoints and visualizes the body skeleton in real time. I
 ```text
 PoseNet-Real-Time-Pose-Detection/
 ├── index.html
-├── sn.js
+├── script.js
 ├── doges.jpg
 └── README.md
 ```
