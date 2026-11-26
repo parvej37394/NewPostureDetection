@@ -143,13 +143,13 @@ function draw() {
 
 
         // Dynamic Image Size Based on Eye Distance
+    
+        // Dynamic Image Size Based on Eye Distance
         if (
-
             ac_img &&
             ac_img.width > 0 &&
             singlePose.leftEye.confidence > 0.2 &&
             singlePose.rightEye.confidence > 0.2
-
         ) {
         
             let eyeDistance = dist(
@@ -158,44 +158,29 @@ function draw() {
                 singlePose.rightEye.x,
                 singlePose.rightEye.y
             );
-            
-            let imgSize = map(eyeDistance, 10, 100, 30, 150);
-            imgSize = constrain(imgSize, 60, 220);
-            
-            image(ac_img, singlePose.nose.x - imgSize / 2,
-                  singlePose.nose.y - imgSize / 2, imgSize, imgSize);
-            
-                        );
-
-
+        
+            // Image Size Control
             let imgSize = map(
-
                 eyeDistance,
                 20,
                 150,
                 50,
                 200
-
             );
-
-
+        
             imgSize = constrain(imgSize, 50, 200);
-
-
-            // Display Selected Image Near Nose
+        
+            // Display Image Near Nose
             image(
-
                 ac_img,
-
                 singlePose.nose.x - imgSize / 2,
                 singlePose.nose.y - imgSize / 2,
-
                 imgSize,
                 imgSize
-
             );
-
+        
         }
+
 
     }
 
