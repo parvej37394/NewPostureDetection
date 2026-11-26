@@ -1,4 +1,5 @@
 
+
 let capture;
 let posenet;
 
@@ -8,81 +9,92 @@ let skeleton;
 let ac_img;
 let selectedImage = "dogess.jpg";
 
-// All images are in the root folder
-const imageList = [
-    "carton.jpg",
-    "face.jpg",
-    "ironman.jpg",
-    "spiderman.jpg",
-    "cat.jpg",
-    "dogess.jpg"
-];
-
 function setup() {
 
     createCanvas(800, 500);
 
+    // Webcam Capture
     capture = createCapture(VIDEO);
     capture.size(800, 500);
     capture.hide();
 
+    // PoseNet Model
     posenet = ml5.poseNet(capture, modelLoaded);
     posenet.on('pose', receivedPoses);
 
-    // Load default image
+    // Load Default Image
     loadSelectedImage(selectedImage);
 
-    // Image selection
+    // Image Selection
     let selector = document.getElementById("imageSelect");
 
-    if (selector) {
-        selector.addEventListener("change", function() {
+    selector.addEventListener("change", function() {
 
-            selectedImage = this.value;
-            loadSelectedImage(selectedImage);
+        selectedImage = this.value;
 
-        });
-    }
+        loadSelectedImage(selectedImage);
+
+    });
+
 }
 
-// Load image from root folder
+
+// Image Loading Function
 function loadSelectedImage(imageName) {
 
     ac_img = loadImage(
+
         imageName,
-        () => {
-            console.log("Image loaded successfully:", imageName);
+
+        function() {
+            console.log("Image Loaded:", imageName);
         },
-        (error) => {
-            console.error("Image loading failed:", imageName, error);
+
+        function(error) {
+            console.log("Image Loading Failed:", imageName, error);
         }
+
     );
+
 }
 
+
+// PoseNet Model Loaded
+function modelLoaded() {
+
+    console.log("PoseNet Model Loaded Successfully");
+
+}
+
+
+// Receive Pose Data
 function receivedPoses(poses) {
 
     if (poses.length > 0) {
 
         singlePose = poses[0].pose;
+
         skeleton = poses[0].skeleton;
 
     }
+
 }
 
-function modelLoaded() {
-    console.log("PoseNet Model Loaded");
-}
 
+// Draw Function
 function draw() {
 
     background(0);
 
+    // Webcam Display
     image(capture, 0, 0, 800, 500);
+
 
     if (singlePose) {
 
-        // Keypoints
+        // Keypoints Detection
         fill(211, 89, 190);
+
         noStroke();
 
         for (let i = 0; i < singlePose.keypoints.length; i++) {
@@ -97,14 +109,19 @@ function draw() {
                     10,
                     10
                 );
+
             }
+
         }
 
-        // Skeleton
+
+        // Skeleton Detection
         stroke(11, 255, 97);
+
         strokeWeight(3);
 
         if (skeleton) {
+
             for (let i = 0; i < skeleton.length; i++) {
 
                 let [a, b] = skeleton[i];
@@ -117,43 +134,66 @@ function draw() {
                         b.position.x,
                         b.position.y
                     );
+
                 }
+
             }
+
         }
 
-        // Dynamic Image Size
+
+        // Dynamic Image Size Based on Eye Distance
         if (
+
             ac_img &&
             ac_img.width > 0 &&
             singlePose.leftEye.confidence > 0.2 &&
             singlePose.rightEye.confidence > 0.2
+
         ) {
 
             let eyeDistance = dist(
+
                 singlePose.leftEye.x,
                 singlePose.leftEye.y,
+
                 singlePose.rightEye.x,
                 singlePose.rightEye.y
+
             );
 
+
             let imgSize = map(
+
                 eyeDistance,
                 20,
                 150,
                 50,
                 200
+
             );
+
 
             imgSize = constrain(imgSize, 50, 200);
 
+
+            // Display Selected Image Near Nose
             image(
+
                 ac_img,
+
                 singlePose.nose.x - imgSize / 2,
                 singlePose.nose.y - imgSize / 2,
+
                 imgSize,
                 imgSize
+
             );
+
         }
+
     }
+
 }
+
 
