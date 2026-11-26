@@ -160,7 +160,7 @@ function draw() {
             );
             
             let imgSize = map(eyeDistance, 10, 100, 30, 150);
-            imgSize = constrain(imgSize, 30, 150);
+            imgSize = constrain(imgSize, 60, 220);
             
             image(ac_img, singlePose.nose.x - imgSize / 2,
                   singlePose.nose.y - imgSize / 2, imgSize, imgSize);
