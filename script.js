@@ -6,7 +6,17 @@ let singlePose;
 let skeleton;
 
 let ac_img;
-let selectedImage = "dog.jpg";
+let selectedImage = "dogess.jpg";
+
+// All images are in the root folder
+const imageList = [
+    "carton.jpg",
+    "face.jpg",
+    "ironman.jpg",
+    "spiderman.jpg",
+    "cat.jpg",
+    "dogess.jpg"
+];
 
 function setup() {
 
@@ -20,22 +30,33 @@ function setup() {
     posenet.on('pose', receivedPoses);
 
     // Load default image
-    ac_img = loadImage('images/dog.jpg');
+    loadSelectedImage(selectedImage);
 
     // Image selection
     let selector = document.getElementById("imageSelect");
 
-    selector.addEventListener("change", function() {
+    if (selector) {
+        selector.addEventListener("change", function() {
 
-        selectedImage = this.value;
+            selectedImage = this.value;
+            loadSelectedImage(selectedImage);
 
-        ac_img = loadImage(
-            'images/' + selectedImage,
-            () => console.log("Image loaded: " + selectedImage),
-            () => console.log("Image loading failed")
-        );
+        });
+    }
+}
 
-    });
+// Load image from root folder
+function loadSelectedImage(imageName) {
+
+    ac_img = loadImage(
+        imageName,
+        () => {
+            console.log("Image loaded successfully:", imageName);
+        },
+        (error) => {
+            console.error("Image loading failed:", imageName, error);
+        }
+    );
 }
 
 function receivedPoses(poses) {
@@ -83,18 +104,20 @@ function draw() {
         stroke(11, 255, 97);
         strokeWeight(3);
 
-        for (let i = 0; i < skeleton.length; i++) {
+        if (skeleton) {
+            for (let i = 0; i < skeleton.length; i++) {
 
-            let [a, b] = skeleton[i];
+                let [a, b] = skeleton[i];
 
-            if (a.score > 0.2 && b.score > 0.2) {
+                if (a.score > 0.2 && b.score > 0.2) {
 
-                line(
-                    a.position.x,
-                    a.position.y,
-                    b.position.x,
-                    b.position.y
-                );
+                    line(
+                        a.position.x,
+                        a.position.y,
+                        b.position.x,
+                        b.position.y
+                    );
+                }
             }
         }
 
@@ -133,3 +156,4 @@ function draw() {
         }
     }
 }
+
